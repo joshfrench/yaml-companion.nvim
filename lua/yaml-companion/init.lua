@@ -5,11 +5,15 @@ local ctx = require("yaml-companion.context")
 
 M.setup = function(opts)
   local config = require("yaml-companion.config")
-  config.setup(opts, function(client, bufnr)
-    ctx.setup(bufnr, client)
-  end)
+  config.setup(opts)
+
   vim.lsp.handlers["yaml/schema/store/initialized"] = ctx.store_initialized_handler
-  return config.options.lspconfig
+
+  local au = vim.api.nvim_create_augroup('yaml-companion.nvim', { clear = true })
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = au,
+    callback = ctx.attach
+  })
 end
 
 --- Set the schema used for a buffer.

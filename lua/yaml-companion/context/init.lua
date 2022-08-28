@@ -76,7 +76,14 @@ M.autodiscover = function(bufnr, client)
   M.ctxs[bufnr].executed = true
 end
 
-M.setup = function(bufnr, client)
+M.attach = function(args)
+  local bufnr = args.buf
+  local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+  if client.name ~= "yamlls" then
+    return
+  end
+
   local state = {
     bufnr = bufnr,
     client = client,
